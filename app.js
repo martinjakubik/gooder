@@ -13,10 +13,26 @@ var config = {
 
 var client = new Twitter(config);
 
-client.get('favorites/list', function(error, tweets, response) {
+var sApiCall = 'favorites/list'
+
+client.get(sApiCall, function(error, tweets, response) {
     if (error) {
         console.log(error);
         throw error;
     }
-    console.log(tweets);
+
+    var sFilenameBase = 'tweets',
+        sSuffix = 'txt',
+        sDir = 'store';
+    var sFilename = sDir + '/' + sFilenameBase + '.' + sSuffix;
+
+    var n = 0;
+    while(fs.existsSync(sFilename)) {
+        n++;
+        sFilenameBase = sFilenameBase + n;
+        sFilename = sDir + '/' + sFilenameBase + '.' + sSuffix;
+    }
+
+    fs.writeFileSync(sFilename, sApiCall);
+    fs.writeFileSync(sFilename, tweets);
 });
