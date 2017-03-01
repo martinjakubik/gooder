@@ -13,7 +13,7 @@ var config = {
 
 var client = new Twitter(config);
 
-var sApiCall = 'favorites/list'
+var sApiCall = 'search/tweets.json?q=news';
 
 client.get(sApiCall, function(error, tweets, response) {
     if (error) {
@@ -22,6 +22,7 @@ client.get(sApiCall, function(error, tweets, response) {
     }
 
     var sFilenameBase = 'tweets',
+        sFilenameBaseCheck,
         sSuffix = 'txt',
         sDir = 'store';
     var sFilename = sDir + '/' + sFilenameBase + '.' + sSuffix;
@@ -29,10 +30,10 @@ client.get(sApiCall, function(error, tweets, response) {
     var n = 0;
     while(fs.existsSync(sFilename)) {
         n++;
-        sFilenameBase = sFilenameBase + n;
-        sFilename = sDir + '/' + sFilenameBase + '.' + sSuffix;
+        sFilenameBaseCheck = sFilenameBase + n;
+        sFilename = sDir + '/' + sFilenameBaseCheck + '.' + sSuffix;
     }
 
     fs.writeFileSync(sFilename, sApiCall);
-    fs.writeFileSync(sFilename, tweets);
+    fs.writeFileSync(sFilename, JSON.stringify(tweets));
 });
